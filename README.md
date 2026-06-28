@@ -33,3 +33,9 @@ hoppl-interpreter/
 ```bash
 ./gradlew run
 ```
+
+### Running the tests
+
+```bash
+./gradlew test
+```
