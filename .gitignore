@@ -30,3 +30,4 @@ replay_pid*
 # Project
 build/
 gradle/
+.idea/
