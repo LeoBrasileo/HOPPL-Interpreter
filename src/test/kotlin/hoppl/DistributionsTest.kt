@@ -1,5 +1,22 @@
 package hoppl
 
+import hoppl.interpreter.Bernoulli
+import hoppl.interpreter.DISTRIBUTIONS
+import hoppl.interpreter.Dirichlet
+import hoppl.interpreter.Discrete
+import hoppl.interpreter.Exponential
+import hoppl.interpreter.Gamma
+import hoppl.interpreter.HVal
+import hoppl.interpreter.LogNormal
+import hoppl.interpreter.Normal
+import hoppl.interpreter.Poisson
+import hoppl.interpreter.Uniform
+import hoppl.interpreter.UniformDiscrete
+import hoppl.interpreter.hBool
+import hoppl.interpreter.hFloat
+import hoppl.interpreter.hInt
+import hoppl.interpreter.hVec
+import hoppl.interpreter.makeGuide
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.test.Test
@@ -103,7 +120,6 @@ class DistributionsTest {
             assertTrue(s in 0..2)
         }
     }
-
 
     @Test
     fun `Uniform logProb inside support`() {

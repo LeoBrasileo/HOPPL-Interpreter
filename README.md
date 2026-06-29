@@ -1,41 +1,41 @@
 # HOPPL-Interpreter
-A programming interpreter for a Lisp-like language - pure Kotlin
+A programming language interpreter for a Lisp-like probabilistic language 
+
+Pure Kotlin
 
 ---
 
 ## Prerequisites
 
-| Tool | Version | Check |
-|------|---------|-------|
-| JDK  | 17+     | `java -version` |
+| Tool | Version |
+|------|---------|
+| JDK  | 17+     |
 
-You do **not** need to install Kotlin separately — Gradle downloads it automatically.
+You do **not** need to install Kotlin separately - Gradle downloads it automatically.
 
 ---
 
-## Project Structure
+## Running the Interpreter
 
-```
-hoppl-interpreter/
-├── build.gradle.kts          # Build config (Kotlin JVM + application)
-├── settings.gradle.kts       # Project info
-├── gradlew                   # Gradle script (Linux)
-├── gradlew.bat               # Gradle script (Windows)
-└── src/
-    └── main/
-        └── kotlin/
-            └── hoppl/
-                └── Main.kt   # Entry point
-```
-
-## Running the Project
-
+There is a sh script to instantly run the interpreter.
 ```bash
-./gradlew run
+./hoppl "program..."
 ```
 
-### Running the tests
+Example programs:
+```bash
+./hoppl "(+ (1 2))"
 
+./hoppl "(sample (normal 0 1))"
+
+./hoppl "(defn geom [] (if (sample (bernoulli 0.3)) 0 (+ 1 (geom)))) (geom)"
+```
+
+## Run the tests
+
+The project provides several tests, separated by section under `src/test/kotlin/hoppl/`.
+
+Run all by executing:
 ```bash
 ./gradlew test
 ```

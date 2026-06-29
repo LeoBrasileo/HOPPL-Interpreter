@@ -1,5 +1,6 @@
-package hoppl
+package hoppl.interpreter
 
+import kotlin.collections.iterator
 import kotlin.math.*
 
 /**

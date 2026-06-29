@@ -18,6 +18,11 @@ application {
     mainClass.set("hoppl.MainKt")
 }
 
+tasks.named<JavaExec>("run") {
+    (project.findProperty("p") as String?)?.let { args(it) }
+    standardInput = System.`in`
+}
+
 tasks.test {
     useJUnitPlatform()
 }

@@ -1,10 +1,7 @@
 package hoppl
 
 /**
- * S-expression reader.
- *
- * Forms are represented as Kotlin values
- * The return type of parse / parseOne is [Form] = Any?.
+ * S-expression parser for the HOPPL language.
  */
 
 @JvmInline
@@ -19,7 +16,7 @@ private const val DELIMITERS = " \t\n\r,"
 /**
  * Tokenize [text] into a flat list of tokens.
  * Tokens are:
- *   "(" or ")"     for any of ( ) [ ]
+ *   "(" or ")" for any of ( ) [ ]
  *   a [StringToken] for "..." literals
  *   a plain [String] for identifiers / numbers
  */
@@ -70,7 +67,6 @@ private fun atom(token: Any): Form = when (token) {
     else -> error("unexpected token type: $token")
 }
 
-/** Returns (form, next_position). */
 private fun readForm(tokens: List<Any>, pos: Int): Pair<Form, Int> {
     if (pos >= tokens.size) throw SyntaxError("unexpected end of input")
     return when (val tok = tokens[pos]) {
@@ -92,9 +88,6 @@ private fun readForm(tokens: List<Any>, pos: Int): Pair<Form, Int> {
     }
 }
 
-/**
- * Parse [text] into a list of top-level forms.
- */
 fun parse(text: String): List<Form> {
     val tokens = tokenize(text)
     val forms = mutableListOf<Form>()
@@ -107,9 +100,6 @@ fun parse(text: String): List<Form> {
     return forms
 }
 
-/**
- * Parse [text] that contains exactly one top-level form.
- */
 fun parseOne(text: String): Form {
     val forms = parse(text)
     if (forms.size != 1)
@@ -117,9 +107,7 @@ fun parseOne(text: String): Form {
     return forms[0]
 }
 
-/**
- * Render a [Form] back to approximate source text (useful for debugging).
- */
+
 fun formToString(form: Form): String = when (form) {
     null -> "nil"
     is Boolean -> if (form) "true" else "false"

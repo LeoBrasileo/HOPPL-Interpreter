@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Evaluate a HOPPL program and print its result value.
+set -euo pipefail
+cd "$(dirname "$0")"
+if [ "$#" -gt 0 ]; then
+    exec ./gradlew -q run --args="$*"
+else
+    exec ./gradlew -q run
+fi

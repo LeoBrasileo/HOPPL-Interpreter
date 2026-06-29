@@ -1,6 +1,19 @@
 package hoppl
 
+import hoppl.interpreter.initialMachine
+
 fun main(args: Array<String>) {
-    println("HOPPL Interpreter — starting up")
-    println("Args: ${args.toList()}")
+    val program = if (args.isNotEmpty()) {
+        args.joinToString(" ")
+    } else {
+        System.`in`.bufferedReader().readText()
+    }
+
+    if (program.isBlank()) {
+        System.err.println("usage: ./gradlew run --args=\"<program>\"")
+        return
+    }
+
+    val trace = run(initialMachine(program))
+    println(trace.value)
 }

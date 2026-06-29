@@ -1,5 +1,6 @@
-package hoppl
+package hoppl.interpreter
 
+import java.util.Random
 import kotlin.math.*
 
 /**
@@ -67,10 +68,12 @@ sealed class HVal {
         is HMatrix -> v.joinToString("\n") { row -> "[${row.joinToString(" ")}]" }
         is HDist -> v.toString()
         is HNil -> "nil"
+        is Closure -> toString()
+        is Primitive -> toString()
     }
 }
 
-// Convenience constructors — keep call-sites short
+// Convenience constructors
 fun hInt(v: Long)  = HVal.HInt(v)
 fun hInt(v: Int)  = HVal.HInt(v.toLong())
 fun hFloat(v: Double) = HVal.HFloat(v)
@@ -83,7 +86,7 @@ val HNil = HVal.HNil
 /**
  * Base class for all probability distributions.
  *
- * [sample]       draw a value using a [java.util.Random]-based RNG
+ * [sample]       draw a value using a [Random]-based RNG
  * [logProb]      log density / log mass at x
  * [params]       unconstrained parameter vector
  * [withParams]   reconstruct from unconstrained vector
@@ -91,7 +94,7 @@ val HNil = HVal.HNil
  */
 abstract class Distribution {
     abstract val name: String
-    abstract fun sample(rng: java.util.Random): HVal
+    abstract fun sample(rng: Random): HVal
     abstract fun logProb(x: HVal): Double
 
     open fun params(): DoubleArray =
@@ -104,7 +107,7 @@ abstract class Distribution {
 
 private fun sigmoid(x: Double) = 1.0 / (1.0 + exp(-x))
 
-private fun softmax(v: DoubleArray): DoubleArray {
+fun softmax(v: DoubleArray): DoubleArray {
     val m = v.max()
     val e = DoubleArray(v.size) { exp(v[it] - m) }
     val s = e.sum()
@@ -118,7 +121,7 @@ class Normal(val mu: Double, val sigma: Double) : Distribution() {
 
     override val name = "normal"
 
-    override fun sample(rng: java.util.Random): HVal =
+    override fun sample(rng: Random): HVal =
         hFloat(mu + sigma * rng.nextGaussian())
 
     override fun logProb(x: HVal): Double {
@@ -141,7 +144,7 @@ class LogNormal(val mu: Double, val sigma: Double) : Distribution() {
 
     override val name = "log-normal"
 
-    override fun sample(rng: java.util.Random): HVal =
+    override fun sample(rng: Random): HVal =
         hFloat(exp(mu + sigma * rng.nextGaussian()))
 
     override fun logProb(x: HVal): Double {
@@ -166,7 +169,7 @@ class Uniform(val a: Double, val b: Double) : Distribution() {
 
     override val name = "uniform-continuous"
 
-    override fun sample(rng: java.util.Random): HVal =
+    override fun sample(rng: Random): HVal =
         hFloat(a + rng.nextDouble() * (b - a))
 
     override fun logProb(x: HVal): Double {
@@ -182,7 +185,7 @@ class Exponential(val rate: Double) : Distribution() {
 
     override val name = "exponential"
 
-    override fun sample(rng: java.util.Random): HVal =
+    override fun sample(rng: Random): HVal =
         hFloat(-ln(rng.nextDouble()) / rate)
 
     override fun logProb(x: HVal): Double {
@@ -202,7 +205,7 @@ class Beta(val alpha: Double, val beta: Double) : Distribution() {
     override val name = "beta"
 
     // Box-Muller method
-    override fun sample(rng: java.util.Random): HVal {
+    override fun sample(rng: Random): HVal {
         val ga = sampleGamma(rng, alpha)
         val gb = sampleGamma(rng, beta)
         return hFloat(ga / (ga + gb))
@@ -223,7 +226,7 @@ class Gamma(val shape: Double, val rate: Double) : Distribution() {
 
     override val name = "gamma"
 
-    override fun sample(rng: java.util.Random): HVal =
+    override fun sample(rng: Random): HVal =
         hFloat(sampleGamma(rng, shape) / rate)
 
     override fun logProb(x: HVal): Double {
@@ -240,7 +243,7 @@ class Poisson(val lam: Double) : Distribution() {
 
     override val name = "poisson"
 
-    override fun sample(rng: java.util.Random): HVal {
+    override fun sample(rng: Random): HVal {
         var k = 0
         var p = rng.nextDouble()
         val target = exp(-lam)
@@ -262,7 +265,7 @@ class Bernoulli(val p: Double) : Distribution() {
 
     override val name = "flip"
 
-    override fun sample(rng: java.util.Random): HVal =
+    override fun sample(rng: Random): HVal =
         hBool(rng.nextDouble() < p)
 
     override fun logProb(x: HVal): Double {
@@ -299,7 +302,7 @@ class Discrete(probs: List<Double>) : Distribution() {
 
     override val name = "discrete"
 
-    override fun sample(rng: java.util.Random): HVal {
+    override fun sample(rng: Random): HVal {
         var r = rng.nextDouble()
         for (i in probs.indices) {
             r -= probs[i]
@@ -329,7 +332,7 @@ class UniformDiscrete(val lo: Int, val hi: Int) : Distribution() {
 
     override val name = "uniform-discrete"
 
-    override fun sample(rng: java.util.Random): HVal =
+    override fun sample(rng: Random): HVal =
         hInt((lo + rng.nextInt(hi - lo)).toLong())
 
     override fun logProb(x: HVal): Double {
@@ -346,7 +349,7 @@ class Dirichlet(val alphas: DoubleArray) : Distribution() {
 
     override val name = "dirichlet"
 
-    override fun sample(rng: java.util.Random): HVal {
+    override fun sample(rng: Random): HVal {
         val gs = DoubleArray(alphas.size) { sampleGamma(rng, alphas[it]) }
         val s = gs.sum()
         return hVec(gs.map { hFloat(it / s) })
@@ -362,7 +365,7 @@ class Dirichlet(val alphas: DoubleArray) : Distribution() {
     override fun toString() = "(dirichlet ${alphas.toList()})"
 }
 
-private fun sampleGamma(rng: java.util.Random, shape: Double): Double {
+private fun sampleGamma(rng: Random, shape: Double): Double {
     if (shape < 1.0) {
         return sampleGamma(rng, shape + 1.0) * rng.nextDouble().pow(1.0 / shape)
     }

@@ -5,6 +5,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
+/**
+ * Parser tests.
+ */
 class ReaderTest {
 
     @Test
@@ -99,7 +102,7 @@ class ReaderTest {
 
     @Test
     fun `formToString renders booleans`() {
-        assertEquals("true",  formToString(true))
+        assertEquals("true", formToString(true))
         assertEquals("false", formToString(false))
     }
 

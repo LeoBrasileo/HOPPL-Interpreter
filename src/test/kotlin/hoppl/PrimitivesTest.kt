@@ -1,5 +1,16 @@
 package hoppl
 
+import hoppl.interpreter.Bernoulli
+import hoppl.interpreter.HNil
+import hoppl.interpreter.HVal
+import hoppl.interpreter.Normal
+import hoppl.interpreter.PRIMITIVES
+import hoppl.interpreter.hBool
+import hoppl.interpreter.hFloat
+import hoppl.interpreter.hInt
+import hoppl.interpreter.hMap
+import hoppl.interpreter.hVec
+import hoppl.interpreter.isPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -32,7 +43,7 @@ class PrimitivesTest {
     }
 
     @Test
-    fun `* multiplies integers`() {
+    fun `multiply integers`() {
         assertEquals(hInt(24), call("*", hInt(2), hInt(3), hInt(4)))
     }
 
@@ -78,7 +89,6 @@ class PrimitivesTest {
         assertEquals(hFloat(1.0), call("min", hFloat(3.0), hFloat(9.0), hFloat(1.0)))
     }
 
-
     @Test
     fun `= returns true for equal ints`() {
         assertEquals(hBool(true), call("=", hInt(5), hInt(5)))
@@ -103,8 +113,8 @@ class PrimitivesTest {
 
     @Test
     fun `and is true only when all truthy`() {
-        assertEquals(hBool(true),  call("and", hBool(true),  hBool(true)))
-        assertEquals(hBool(false), call("and", hBool(true),  hBool(false)))
+        assertEquals(hBool(true),  call("and", hBool(true), hBool(true)))
+        assertEquals(hBool(false), call("and", hBool(true), hBool(false)))
     }
 
     @Test
@@ -112,7 +122,6 @@ class PrimitivesTest {
         assertEquals(hBool(true),  call("or", hBool(false), hBool(true)))
         assertEquals(hBool(false), call("or", hBool(false), hBool(false)))
     }
-
 
     @Test
     fun `vector creates HVec`() {
@@ -151,7 +160,7 @@ class PrimitivesTest {
     }
 
     @Test
-    fun `empty? is true for empty vector`() {
+    fun `ask empty is true for empty vector`() {
         assertEquals(hBool(true), call("empty?", hVec(emptyList())))
     }
 
@@ -191,8 +200,6 @@ class PrimitivesTest {
         )
     }
 
-
-
     @Test
     fun `hash-map creates HMap`() {
         val m = call("hash-map", hInt(1), hInt(10), hInt(2), hInt(20))
@@ -227,24 +234,23 @@ class PrimitivesTest {
 
 
     @Test
-    fun `vector? is true for HVec`() {
+    fun `ask vector is true for HVec`() {
         assertEquals(hBool(true),  call("vector?", hVec(emptyList())))
         assertEquals(hBool(false), call("vector?", hInt(1)))
     }
 
     @Test
-    fun `map? is true for HMap`() {
+    fun `ask map is true for HMap`() {
         assertEquals(hBool(true),  call("map?", hMap(emptyMap())))
         assertEquals(hBool(false), call("map?", hInt(1)))
     }
 
     @Test
-    fun `number? is true for int and float`() {
+    fun `ask number is true for int and float`() {
         assertEquals(hBool(true),  call("number?", hInt(1)))
         assertEquals(hBool(true),  call("number?", hFloat(1.0)))
         assertEquals(hBool(false), call("number?", hBool(true)))
     }
-
 
     @Test
     fun `normal constructor in PRIMITIVES returns HDist`() {
@@ -259,7 +265,6 @@ class PrimitivesTest {
         assertTrue((d as HVal.HDist).v is Bernoulli)
     }
 
-
     @Test
     fun `isPrimitive returns true for known names`() {
         assertTrue(isPrimitive("+"))
@@ -269,6 +274,6 @@ class PrimitivesTest {
 
     @Test
     fun `isPrimitive returns false for unknown names`() {
-        assertFalse(isPrimitive("hoppl-magic"))
+        assertFalse(isPrimitive("nothing"))
     }
 }
