@@ -44,6 +44,9 @@ fun runSMC(program: String, rngs: List<Random>, n: Int): List<HVal> {
         if (messages.all { it is StepResult.Done })
             return messages.map { (it as StepResult.Done).value }
 
+        if (!messages.all { it is StepResult.Observe })
+            throw DivergentBreakpointException("particles reached different breakpoints")
+
         val logInc = DoubleArray(n)
         val paused = ArrayList<M>(n)
         for ((k, msg) in messages.withIndex()) {
@@ -61,3 +64,6 @@ fun runSMC(program: String, rngs: List<Random>, n: Int): List<HVal> {
         particles = List(n) { j -> paused[ancestors[j]].fork(rngs[j]) }
     }
 }
+
+/** SMC requires every trace to share the same observe sequence */
+class DivergentBreakpointException(message: String) : RuntimeException(message)

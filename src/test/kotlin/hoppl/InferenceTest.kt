@@ -1,5 +1,6 @@
 package hoppl
 
+import hoppl.controllers.DivergentBreakpointException
 import hoppl.controllers.runLikelihoodWeighting
 import hoppl.controllers.likelihoodWeighting
 import hoppl.controllers.runSMC
@@ -11,7 +12,9 @@ import java.util.Random
 import kotlin.math.exp
 import kotlin.math.sqrt
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
  * Inference tests for probabilistic programs, use SMC and MH.
@@ -116,6 +119,18 @@ class InferenceTest {
 
         val chain = runSingleSiteMH(bits, Random(), 80_000, warmup = 3_000)
         assertEquals(exact, mean(chain), 0.05)
+    }
+
+    @Test
+    fun `smc breaks when traces stop at different breakpoints`() {
+        val divergent = """
+            (let [b (sample (flip 0.5))]
+              (if b (observe (normal 0 1) 0) 0)
+              b)
+        """.trimIndent()
+
+        val ex = assertFailsWith<DivergentBreakpointException> { runSMC(divergent, n = 64, seed = 1) }
+        assertContains(ex.message ?: "", "different breakpoints")
     }
 
     @Test
