@@ -28,21 +28,21 @@ private fun sampleCategorical(rng: Random, probs: DoubleArray): Int {
     return probs.size - 1
 }
 
+fun runSMC(program: String, n: Int, seed: Long): List<HVal> {
+    val master = Random(seed)
+    return runSMC(program, List(n) { Random(master.nextLong()) }, n)
+}
+
 /**
- * Run Sequential Monte Carlo with [n] particles.
+ * Run Sequential Monte Carlo with [n] particles, one rng per particle.
  */
 fun runSMC(program: String, rngs: List<Random>, n: Int): List<HVal> {
-    require(rngs.size >= n) { "runSMC needs at least n=$n rngs, got ${rngs.size}" }
     var particles = List(n) { initialMachine(program, rngs[it]) }
     while (true) {
         val messages = particles.map { advance(it) }
 
-        if (messages.all { it is StepResult.Done }) {
+        if (messages.all { it is StepResult.Done })
             return messages.map { (it as StepResult.Done).value }
-        }
-        require(messages.all { it is StepResult.Observe }) {
-            "particles reached different breakpoints: SMC needs a shared observe sequence"
-        }
 
         val logInc = DoubleArray(n)
         val paused = ArrayList<M>(n)

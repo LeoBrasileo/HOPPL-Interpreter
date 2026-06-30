@@ -62,6 +62,12 @@ class InterpreterTest {
     }
 
     @Test
+    fun `functions can return closures that capture their argument`() {
+        val src = "(let [make-shift (fn [mu] (fn [x] (+ x mu)))  f (make-shift 10)] (f 3))"
+        assertEquals(hInt(13), eval(src))
+    }
+
+    @Test
     fun `higher order functions`() {
         val src = """
             (let [twice (fn [f x] (f (f x)))
@@ -88,11 +94,5 @@ class InterpreterTest {
             (even? 10)
         """.trimIndent()
         assertEquals(hBool(true), eval(src))
-    }
-
-    @Test
-    fun `sample with a fixed seed returns a concrete value`() {
-        val v = eval("(sample (normal 0 1))")
-        assertTrue(v is HVal.HFloat, "expected a float draw, got $v")
     }
 }

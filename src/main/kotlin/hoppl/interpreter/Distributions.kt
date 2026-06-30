@@ -3,9 +3,7 @@ package hoppl.interpreter
 import java.util.Random
 import kotlin.math.*
 
-/**
- * Runtime value type for the HOPPL interpreter.
- */
+// It is important for this class to be sealed given that allow us to match all possible expressions on the evaluator run
 sealed class HVal {
     data class HInt(val v: Long) : HVal()
     data class HFloat(val v: Double) : HVal()

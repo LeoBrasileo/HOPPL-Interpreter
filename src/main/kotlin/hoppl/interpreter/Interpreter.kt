@@ -175,9 +175,7 @@ private fun literal(e: Form): HVal = when (e) {
 
 private fun paramNames(params: Form): List<String> = (params as List<*>).map { (it as Symbol).name }
 
-/**
- * Parse [program], build a machine ready to evaluate the single trailing main expression.
- */
+
 fun initialMachine(program: String, rng: Random = Random()): M {
     val genv = LinkedHashMap<String, HVal>()
     var main: Form = null
@@ -185,8 +183,7 @@ fun initialMachine(program: String, rng: Random = Random()): M {
         if (form is List<*> && form.isNotEmpty() && (form[0] as? Symbol)?.name == "defn") {
             val name = (form[1] as Symbol).name
             val params = paramNames(form[2])
-            @Suppress("UNCHECKED_CAST")
-            val body = form.subList(3, form.size) as List<Form>
+            val body = form.subList(3, form.size)
             genv[name] = Closure(params, body, genv)
         } else {
             main = form
