@@ -7,17 +7,13 @@ Pure Kotlin
 
 ## Prerequisites
 
-| Tool | Version |
-|------|---------|
-| JDK  | 17+     |
+**JDK 17+**
 
-You do **not** need to install Kotlin separately - Gradle downloads it automatically.
-
----
+You do **not** need to install Kotlin separately - Gradle script downloads it automatically.
 
 ## Running the Interpreter
 
-There is a sh script to instantly run the interpreter.
+There is a sh script to instantly run the interpreter (it uses `./gradlew run` on the back):
 ```bash
 ./hoppl "program..."
 ```
