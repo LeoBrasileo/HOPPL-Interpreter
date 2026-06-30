@@ -37,9 +37,7 @@ private class IfK(
 ) : Frame()
 
 private class CallK(val n: Int, val addr: Address) : Frame()
-
 private class SampleK(val addr: Address) : Frame()
-
 private class ObserveK(val addr: Address) : Frame()
 
 sealed class StepResult {

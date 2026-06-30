@@ -1,9 +1,9 @@
 package hoppl
 
-import hoppl.interpreter.Bernoulli
+import hoppl.distributions.Bernoulli
 import hoppl.interpreter.HNil
 import hoppl.interpreter.HVal
-import hoppl.interpreter.Normal
+import hoppl.distributions.Normal
 import hoppl.interpreter.PRIMITIVES
 import hoppl.interpreter.hBool
 import hoppl.interpreter.hFloat

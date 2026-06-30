@@ -1,5 +1,6 @@
 package hoppl
 
+import hoppl.controllers.run
 import hoppl.interpreter.initialMachine
 
 fun main(args: Array<String>) {

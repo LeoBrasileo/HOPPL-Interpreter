@@ -1,5 +1,6 @@
 package hoppl.interpreter
 
+import hoppl.distributions.DISTRIBUTIONS
 import kotlin.collections.iterator
 import kotlin.math.*
 
@@ -8,7 +9,6 @@ import kotlin.math.*
  *
  * Each entry in [PRIMITIVES] takes a List<HVal> and returns an HVal.
  */
-
 typealias Prim = (List<HVal>) -> HVal
 
 private fun num(x: HVal): Double = x.toDouble()
@@ -72,8 +72,8 @@ private fun primGet(args: List<HVal>): HVal {
 }
 
 private fun primPut(args: List<HVal>): HVal {
-    val coll  = args[0]
-    val key   = args[1]
+    val coll = args[0]
+    val key = args[1]
     val value = args[2]
     return when (coll) {
         is HVal.HMap -> hMap(coll.v + mapOf(key to value))

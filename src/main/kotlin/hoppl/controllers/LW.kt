@@ -1,7 +1,7 @@
 package hoppl.controllers
 
+import hoppl.distributions.softmax
 import hoppl.interpreter.*
-import hoppl.run
 import java.util.*
 
 fun runLikelihoodWeighting(program: String, rng: Random, n: Int): Pair<List<HVal>, DoubleArray> {

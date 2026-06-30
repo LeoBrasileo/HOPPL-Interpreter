@@ -1,12 +1,12 @@
 package hoppl
 
+import hoppl.controllers.run
 import hoppl.interpreter.HVal
 import hoppl.interpreter.hBool
 import hoppl.interpreter.hInt
 import hoppl.interpreter.initialMachine
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 /**
  * Deterministic evaluation tests for the interpreter.

@@ -1,7 +1,5 @@
 package hoppl.controllers
 
-import hoppl.Trace
-import hoppl.run
 import hoppl.interpreter.Address
 import hoppl.interpreter.initialMachine
 import java.util.Random

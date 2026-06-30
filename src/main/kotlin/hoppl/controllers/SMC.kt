@@ -4,10 +4,9 @@ import hoppl.interpreter.HVal
 import hoppl.interpreter.M
 import hoppl.interpreter.StepResult
 import hoppl.interpreter.initialMachine
-import hoppl.logProb
 import hoppl.interpreter.resume
 import hoppl.interpreter.send
-import hoppl.interpreter.softmax
+import hoppl.distributions.softmax
 import java.util.Random
 
 fun advance(m: M): StepResult {
@@ -51,7 +50,7 @@ fun runSMC(program: String, rngs: List<Random>, n: Int): List<HVal> {
         val paused = ArrayList<M>(n)
         for ((k, msg) in messages.withIndex()) {
             msg as StepResult.Observe
-            val lp = logProb(msg.dist, msg.value)
+            val lp = msg.dist.toDist().logProb(msg.value)
             msg.m.logW += lp
             logInc[k] = lp
             send(msg.m, msg.value)
