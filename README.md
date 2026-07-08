@@ -27,8 +27,8 @@ The runner stage are defined on the `controllers`.
 
 HOPPL extends an ordinary functional language (`let`, `if`, functions) with exactly two special forms, and everything about inference is built around them:
 
-- **`sample`** — draw a random value from a distribution. This is a random *choice*.
-- **`observe`** — score a value against a distribution."
+- **`sample`**: Draw a random value from a distribution. This is a random *choice*.
+- **`observe`**: Score a value against a distribution.
 
 A single run of the program produces one **trace**: the sequence of choices it made at each `sample`, and the total log-likelihood it accumulated at each `observe`.
 
